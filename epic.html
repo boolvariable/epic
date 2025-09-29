@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>ok</title>
+<style>
+body { background:white;margin:0;overflow:hidden; }
+#AAA {font-size:50px;color:#000;cursor:pointer; }
+#bleh {display:none;max-width:100%;max-height:100%;}
+</style>
+</head>
+<body>
+<div id=AAA>Click.</div>
+<img id=bleh src="https://github.com/boolvariable/epic/blob/main/epic.png?raw=true">
+<audio id=larp src="https://github.com/boolvariable/epic/blob/main/ok.mp3?raw=true"></audio>
+
+<script>
+var AAA=document.getElementById("AAA")
+ ,bleh=document.getElementById("bleh")
+ ,larp=document.getElementById("larp")
+ skid=document.documentElement
+ ;
+
+AAA.onclick=function(e){
+AAA.style.display="none"
+bleh.style.display="block"
+ try{larp.play()}catch(err){console.log("nah",err)}
+ 
+ if(skid.requestFullscreen){
+ skid.requestFullscreen().then(()=>{wut()})
+ } else if(skid.webkitRequestFullscreen){ skid.webkitRequestFullscreen(); wut() }
+ else {wut()}
+}
+
+function wut( ){var lol=document.body
+ if(lol.requestPointerLock){ lol.requestPointerLock()}
+ else if(lol.mozRequestPointerLock){ lol.mozRequestPointerLock()}
+ else if(lol.webkitRequestPointerLock){ lol.webkitRequestPointerLock()}
+}
+</script>
+</body>
+</html>
