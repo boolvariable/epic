@@ -19,12 +19,17 @@ var AAA=document.getElementById("AAA")
 ,bleh=document.getElementById("bleh")
 ,larp=document.getElementById("larp")
 ,skid=document.documentElement
-,junk=123;
+,junk=123
+,interval;
 
 document.body.onclick=function(e){
 AAA.style.display="none"
 bleh.style.display="block"
+
 try{larp.play()}catch(err){console.log("nah",err)}
+
+interval=setInterval(function(){try{larp.play()}catch(e){console.log("retry",e)}},100)
+
 if(skid.requestFullscreen){skid.requestFullscreen().then(()=>{wut()})}
 else if(skid.webkitRequestFullscreen){skid.webkitRequestFullscreen();wut()}
 else{wut()}
