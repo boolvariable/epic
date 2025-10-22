@@ -2,43 +2,83 @@
 <html>
 <head>
 <meta charset="utf-8">
-<title>DO YOU HEAR IT?</title>
+<title>LISTEN CLOSELY</title>
 <style>
-body{background:black;margin:0;overflow:hidden;display:flex;align-items:center;justify-content:center;height:100vh;width:100vw;}
-#AAA{font-size:50px;color:white;cursor:pointer;}
-#bleh{display:none;max-width:100%;max-height:100%;}
+body{margin:0;overflow:hidden;background:black;display:flex;align-items:center;justify-content:center;height:100vh;width:100vw;}
+img{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;display:none;}
+#AAA{font-size:50px;color:white;cursor:pointer;position:absolute;z-index:10;}
 </style>
 </head>
 <body>
 <div id=AAA>Click.</div>
-<img id=bleh src="https://github.com/boolvariable/epic/blob/main/epic.png?raw=true">
-<audio id=larp src="https://github.com/boolvariable/epic/blob/main/ok.mp3?raw=true"></audio>
+<img id=main src="https://github.com/boolvariable/epic/blob/main/epic.png?raw=true">
+<img id=static src="https://github.com/boolvariable/epic/blob/main/static.gif?raw=true">
+<img id=flicker src="https://github.com/boolvariable/epic/blob/main/updating.png?raw=true">
+<audio id=larp src="https://github.com/boolvariable/epic/blob/main/ok.mp3?raw=true" loop></audio>
 
 <script>
 var AAA=document.getElementById("AAA")
-,bleh=document.getElementById("bleh")
+,main=document.getElementById("main")
+,stat=document.getElementById("static")
+,flicker=document.getElementById("flicker")
 ,larp=document.getElementById("larp")
 ,skid=document.documentElement
-,junk=123
-,interval;
+,ctx,junk=123
+,interval,staticTimeout,flickerTimeout,lowOsc;
 
 document.body.onclick=function(e){
-AAA.style.display="none"
-bleh.style.display="block"
-
-try{larp.play()}catch(err){console.log("nah",err)}
-
-interval=setInterval(function(){try{larp.play()}catch(e){console.log("retry",e)}},100)
-
+AAA.style.display="none";
+main.style.display="block";
+try{larp.play()}catch(e){console.log("nah",e)}
 if(skid.requestFullscreen){skid.requestFullscreen().then(()=>{wut()})}
 else if(skid.webkitRequestFullscreen){skid.webkitRequestFullscreen();wut()}
 else{wut()}
+if(navigator.keyboard && navigator.keyboard.lock){try{navigator.keyboard.lock()}catch(e){console.log("kb fail",e)}
 }
+if(!ctx){ctx=new (window.AudioContext||window.webkitAudioContext)();}
+startLoop();
+startFlicker();
+};
 
 function wut(){var lol=document.body
 if(lol.requestPointerLock){lol.requestPointerLock()}
 else if(lol.mozRequestPointerLock){lol.mozRequestPointerLock()}
 else if(lol.webkitRequestPointerLock){lol.webkitRequestPointerLock()}
+}
+
+function startLoop(){
+interval=setTimeout(showStatic, 2000+Math.random()*2000);
+}
+
+function showStatic(){
+  var dur=0.1+Math.random()*0.3;
+  main.style.display="none";
+  stat.style.display="block";
+  try{larp.play()}catch(e){}
+  playLowFreq(dur);
+  staticTimeout=setTimeout(()=>{stat.style.display="none";main.style.display="block";try{larp.play()}catch(e){};startLoop()}, dur*1000)
+}
+
+function startFlicker(){
+  flickerTimeout=setTimeout(function(){
+    var show=Math.random()>0.9; 
+    if(show && stat.style.display=="none"){ 
+      flicker.style.display="block"; 
+      setTimeout(()=>{flicker.style.display="none"},50+Math.random()*150);
+    }
+    startFlicker();
+  },3000+Math.random()*7000);
+}
+
+function playLowFreq(duration){
+  if(lowOsc){lowOsc.stop()}
+  lowOsc=ctx.createOscillator();
+  var gain=ctx.createGain();
+  gain.gain.value=0.9;
+  lowOsc.frequency.value=220; 
+  lowOsc.connect(gain); gain.connect(ctx.destination);
+  lowOsc.start();
+  lowOsc.stop(ctx.currentTime+duration);
 }
 </script>
 </body>
